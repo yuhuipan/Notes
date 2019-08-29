@@ -35,3 +35,14 @@ git checkout -b branchName origin/branchName
 方法二：
 
 git fetch origin branchName:branchName
+
+# git remote
+
+git remote -v	--查看项目远程地址
+
+git remote show origin	--查看当前仓库基本信息
+
+# git status
+
+git status	--检查下修改了什么内容
+
