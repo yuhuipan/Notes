@@ -46,3 +46,6 @@ git remote show origin	--查看当前仓库基本信息
 
 git status	--检查下修改了什么内容
 
+
+
+# **ssh-keygen -t rsa**
