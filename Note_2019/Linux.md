@@ -234,3 +234,5 @@ cd /var/bigdata/hadoop/local/dfs/secondary/current
 观察 SNN 只需要从NN拷贝最后时点的FSImages和增量的editlog
 ```
 
+#  hadoop HA模式
+
