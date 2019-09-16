@@ -5,6 +5,20 @@ ip addr
 serivce network restart
 ```
 
+~~~
+scp 文件路径 ip:/root/   --分发文件到另一台服务器的/root/目录下
+~~~
+
+~~~
+for i in `seq 10`;do echo "hello hadoop $i" >> data.txt;done
+~~~
+
+```
+cp -r 文件 hadoop/ hadoop-local
+```
+
+
+
 # systemctl
 
 ```
@@ -76,10 +90,18 @@ vi /etc/selinux/config --禁用selinux     SELINUX=disabled
 # vi
 
 ```
-yy 复制    
-nyy复制多行
-p 粘贴
-/ 查找
+yy		复制    
+nyy		复制多行
+p		粘贴
+dd		删除当前行
+/		查找
+x        删除当前光标下的字符
+dw       删除光标之后的单词剩余部分。
+d$       删除光标之后的该行剩余部分。
+sift+zz	保存退出
+c        功能和d相同，区别在于完成删除操作后进入INSERT MODE
+cc       也是删除当前行，然后进入INSERT MODE
+删除每行第一个字符    :%s/^.//g
 ```
 
 # 时间同步
