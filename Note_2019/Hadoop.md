@@ -17,6 +17,10 @@ for i in `seq 10`;do echo "hello hadoop $i" >> data.txt;done
 cp -r 文件 hadoop/ hadoop-local
 ```
 
+~~~
+`pwd`替换当前路径
+~~~
+
 
 
 # systemctl
@@ -258,3 +262,75 @@ cd /var/bigdata/hadoop/local/dfs/secondary/current
 
 #  hadoop HA模式
 
+### 规划
+
+```
+NameNode - > node1 
+SecondaryNameNode - > node2
+DataNode - > node2、node3、node4 
+
+
+```
+
+core-site.xml
+
+~~~
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://node1:9000</value>
+    </property>
+</configuration>
+~~~
+
+slaves
+
+~~~
+node2
+node3
+node4
+~~~
+
+hdfs-site.xml
+
+~~~
+<property>
+	<name>dfs.replication</name>
+	<value>2</value>
+</property>
+<property>
+	<name>dfs.namenode.name.dir</name>
+	<value>/var/bigdata/hadoop/full/dfs/name</value>
+</property>
+<property>
+	<name>dfs.datanode.data.dir</name>
+	<value>/var/bigdata/hadoop/full/dfs/data</value>
+</property>
+<property>
+	<name>dfs.namenode.secondary.http-address</name>
+	<value>node2:50090</value> <--secondary namenode启动节点-->
+</property>
+<property>
+	<name>dfs.namenode.checkpoint.dir</name>
+	<value>/var/bigdata/hadoop/full/dfs/secondary</value>
+</property>
+
+~~~
+
+
+
+### 配置 node1 免密登录 node2、node3、node4
+
+~~~
+将node1的公钥发送至node2、node3、node4  
+(scp /root/.ssh/id_dsa.pub node2:/root/.ssh/node1.pub)
+
+进入到node2、node3、node3将node1的公钥追加到/root/.ssh/authorized_keys 
+(cat /root/.ssh/node1.pub >> /root/.ssh/authorized_keys)
+~~~
+
+### 格式化启动
+
+hdfs namenode -format
+
+start-dfs.sh
