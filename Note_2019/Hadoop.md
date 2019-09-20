@@ -152,7 +152,7 @@ cat ~/.ssh/id_das.pub>> ~/.ssh/authorized_keys
 
 # hadoop
 
-1.规划路径
+1.规划路径 -local
 
 ```
 mkdir /opt/bigdata
@@ -260,7 +260,7 @@ cd /var/bigdata/hadoop/local/dfs/secondary/current
 观察 SNN 只需要从NN拷贝最后时点的FSImages和增量的editlog
 ```
 
-#  hadoop HA模式
+#  hadoop 非HA模式-full
 
 ### 规划
 
