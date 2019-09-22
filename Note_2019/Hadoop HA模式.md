@@ -6,80 +6,103 @@
 
 
 
-## 配置
+## 配置HADOOP(cd $HADOOP_HOME/etc/hadoop)
 
 ### core-site.xml      -->  defaultFS
 
 ~~~
-<property>
-  <name>fs.defaultFS</name>
-  <value>hdfs://mycluster</value>
-</property>
+    <property>
+      <name>fs.defaultFS</name>
+      <value>hdfs://mycluster</value>
+    </property>
 
-<property>
-  <name>ha.zookeeper.quorum</name>
-  <value>node2:2181,node3:2181,node4:2181</value>
-</property>
+    <property>
+      <name>ha.zookeeper.quorum</name>
+      <value>node2:2181,node3:2181,node4:2181</value>
+    </property>
 ~~~
 
 ### hdfs-site.xml
 
 ~~~
-<property>
-  <name>dfs.nameservices</name>
-  <value>mycluster</value>
-</property>
+	<property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/var/bigdata/hadoop/ha/dfs/name</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/var/bigdata/hadoop/ha/dfs/data</value>
+    </property>
 
-<property>
-  <name>dfs.ha.namenodes.mycluster</name>
-  <value>nn1,nn2</value>
-</property>
-<!--rpc-address-->
-<property>
-  <name>dfs.namenode.rpc-address.mycluster.nn1</name>
-  <value>node1:8020</value>
-</property>
-<property>
-  <name>dfs.namenode.rpc-address.mycluster.nn2</name>
-  <value>node2:8020</value>
-</property>
-<!--http-address-->
-<property>
-  <name>dfs.namenode.http-address.mycluster.nn1</name>
-  <value>node1:50070</value>
-</property>
-<property>
-  <name>dfs.namenode.http-address.mycluster.nn2</name>
-  <value>node2:50070</value>
-</property>
-<!--journalnode-->
-<property>
-  <name>dfs.namenode.shared.edits.dir</name>
-  <value>qjournal://node1:8485;node2:8485;node3:8485/mycluster</value>
-</property>
-<property>
-  <name>dfs.journalnode.edits.dir</name>
-  <value>/var/bigdata/hadoop/ha/dfs/jn</value>
-</property>
-<!--ConfiguredFailoverProxyProvider-->
-<property>
-  <name>dfs.client.failover.proxy.provider.mycluster</name>
-  <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
-</property>
-<!--ssh免密-->
-<property>
-  <name>dfs.ha.fencing.methods</name>
-  <value>sshfence</value>
-</property>
-<property>
-  <name>dfs.ha.fencing.ssh.private-key-files</name>
-  <value>/root/.ssh/id_rsa</value>
-</property>
-<!--automatic-failover-->
-<property>
-  <name>dfs.ha.automatic-failover.enabled</name>
-  <value>true</value>
-</property>
+	1)一对多，逻辑到物理节点的映射
+    <property>
+      <name>dfs.nameservices</name>
+      <value>mycluster</value>
+    </property>
+
+    <property>
+      <name>dfs.ha.namenodes.mycluster</name>
+      <value>nn1,nn2</value>
+    </property>
+    
+    <!--rpc-address-->
+    <property>
+      <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+      <value>node1:8020</value>
+    </property>
+    <property>
+      <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+      <value>node2:8020</value>
+    </property>
+    
+    <!--http-address-->
+    <property>
+      <name>dfs.namenode.http-address.mycluster.nn1</name>
+      <value>node1:50070</value>
+    </property>
+    <property>
+      <name>dfs.namenode.http-address.mycluster.nn2</name>
+      <value>node2:50070</value>
+    </property>
+    
+    2)JN在哪里启动，数据存那个磁盘
+    <!--journalnode-->
+    <property>
+      <name>dfs.namenode.shared.edits.dir</name>
+      <value>qjournal://node1:8485;node2:8485;node3:8485/mycluster</value>
+    </property>
+    <property>
+      <name>dfs.journalnode.edits.dir</name>
+      <value>/var/bigdata/hadoop/ha/dfs/jn</value>
+    </property>
+    
+    3)HA角色切换的代理类和实现方法，我们用的ssh免密
+    <!--ConfiguredFailoverProxyProvider-->
+    <property>
+      <name>dfs.client.failover.proxy.provider.mycluster</name>
+      <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+    
+    <!--ssh免密-->
+    <property>
+      <name>dfs.ha.fencing.methods</name>
+      <value>sshfence</value>
+    </property>
+    <property>
+      <name>dfs.ha.fencing.ssh.private-key-files</name>
+      <value>/root/.ssh/id_dsa</value>
+    </property>
+    
+    4)开启自动化，启动zk进程
+    <!--automatic-failover-->
+    <property>
+      <name>dfs.ha.automatic-failover.enabled</name>
+      <value>true</value>
+    </property>
 ~~~
 
 ### 流程
@@ -112,9 +135,11 @@ HA 依赖 ZK 搭建ZK集群
 
 使用
 
-~~~
 1)停止之前的集群
+
 2)免密：node1 node2
+
+~~~
 node2:
 cd ~/.ssh
 ssh-keygen -t dsa -P '' -f ./id_dsa
@@ -123,10 +148,16 @@ scp ./id_dsa.pub node1:`pwd`/node2.pub
 node1:
 cd ~/.ssh
 cat node2.pub >> authoried keys
+
+~~~
+
 3)zookeeper 集群搭建 java语言开发 jdk ；部署在2,3,4
+
+~~~
 node2:
 tar xf zookeeper...tar.gz
 mv zoo....  /opt/bigdata
+
 cd /opt/bigdata/zoo...
 cd conf
 cp zoo_sample.cfg zoo.cfg
@@ -135,11 +166,66 @@ vi zoo.cfg
 	server.1=node2:2888:3888
 	server.2=node3:2888:3888
 	server.3=node4:2888:3888
+	
 mkdir /var/bigdata/hadoop/zk
 echo 1 > /var/bigdata/hadoop/zk/myid
+
+vi /etc/profile
+	export ZOOKEEPER_HOME=/opt/bigdata/zookeeper-3.4.6
+	export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$ZOOKEEPER_HOME/bin 
+
+分发到其他机器上
+cd /opt/bigdata
+scp -r zookeeper-3.4.6/ node3:`pwd`
+scp -r zookeeper-3.4.6/ node4:`pwd`
+
+node3:
+mkdir /var/bigdata/hadoop/zk
+echo 2 > /var/bigdata/hadoop/zk/myid
 vi /etc/profile
 	export ZOOKEEPER_HOME=/opt/bigdata/zookeeper-3.4.6
 	export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$ZOOKEEPER_HOME/bin
+. /etc/profile
+node4:
+mkdir /var/bigdata/hadoop/zk
+echo 3 > /var/bigdata/hadoop/zk/myid
+vi /etc/profile
+	export ZOOKEEPER_HOME=/opt/bigdata/zookeeper-3.4.6
+	export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$ZOOKEEPER_HOME/bin
+source /etc/profile
 
+启动zookeeper(node2,3,4)
+zkServer.sh start
+查看状态
+zkServer.sh status
+
+~~~
+
+4)配置hadoop的core-site.xml和hdfs-site.xml
+
+5)分发配置
+
+6)初始化
+
+~~~
+hadoop-daemon.sh start journalnode
+~~~
+
+7)使用验证
+
+~~~
+1)看jn的日志和目录变化
+2）node4
+zkCli.sh
+	ls /
+	启动之后可以看到锁：
+	get /hadoop-ha/mycluster/ActiveStandbyElectorLock
+3)杀死namenode 杀死zkfc
+a)kill active NN
+b)kill active NN 身边的zkfc
+c)shutdown activeNN主机的网卡 ：
+	node2节点一直阻塞降级
+	node1节点恢复网卡
+	最终node2变成active
 ~~~
 
