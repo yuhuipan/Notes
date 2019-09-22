@@ -229,3 +229,13 @@ c)shutdown activeNN主机的网卡 ：
 	最终node2变成active
 ~~~
 
+
+
+~~~
+创建目录：
+hdfs dfs -mkdir -p /user/root
+上传文件：
+hdfs dfs -put data.txt
+
+~~~
+
