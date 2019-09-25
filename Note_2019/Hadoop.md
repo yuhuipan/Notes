@@ -148,6 +148,12 @@ ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa    (-t类型，-P密码 -f保存到)
 cat ~/.ssh/id_das.pub>> ~/.ssh/authorized_keys
 ~~~
 
+~~~
+ssh-copy-id -i id_dsa node2
+~~~
+
+
+
 结论：B包含了A的公钥，B登录A就可以免密了
 
 # hadoop

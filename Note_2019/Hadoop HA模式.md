@@ -235,7 +235,75 @@ c)shutdown activeNN主机的网卡 ：
 创建目录：
 hdfs dfs -mkdir -p /user/root
 上传文件：
-hdfs dfs -put data.txt
+hdfs dfs -put data.txt /
+~~~
 
+node1~node4:
+
+~~~
+1)添加用户god：
+    useradd god
+    passwd god
+2)将资源与用户绑定（a,安装部署程序目录 b,数据存放目录）
+    chown -R god src
+    chown -R god /opt/bigdata/hadoop-2.6.5/
+    chown -R god /var/bigdata/hadoop/
+3)切换到god去启动  start-dfs.sh  <-需要免密
+	给god做免密  HA免密的两个场景都要做 (authoried_keys  -rw- rw- ---)
+	su god
+	ssh localhost >> 为了拿到.ssh目录
+	node1,node2:
+        cd ~/.ssh
+        ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa (-t类型，-P密码 -f保存到)
+	node2:
+        ssh-copy-id -i id_rsa node1 
+        ssh-copy-id -i id_rsa node2
+        ssh-copy-id -i id_rsa node3
+        ssh-copy-id -i id_rsa node4
+    node2:
+        ssh-copy-id -i id_rsa node1 
+        ssh-copy-id -i id_rsa node2
+4)hdfs-site.xml
+    <property>
+      <name>dfs.ha.fencing.ssh.private-key-files</name>
+      <value>/home/god/.ssh/id_rsa</value>
+    </property>
+分发
+    scp hdfs-site.xml node2:`pwd`
+    scp hdfs-site.xml node3:`pwd`
+    scp hdfs-site.xml node4:`pwd`
+
+5)启动 god : $ start-dfs.sh
+	hdfs dfs -mkdir /user/god
+
+	hdfs dfs -mkdir /temp
+修改资源/tmp的归属组(hdfs dfs -chown god:groupname /temp)
+	hdfs dfs -chgrp groupname /temp
+修改资源权限
+	hdfs dfs -chmod 770 /temp
+创建good用户(useradd good \n passwd \n ......)
+在NN所在节点上创建对应组groupname，将god用户添加到groupname组内
+	groupadd groupname
+	usermod -a -G groupname good
+	id good
+	hdfs dfsadmin -refreshUserToGroupsMappins (execute in god)
+	su good
+	hdfs groups
+
+~~~
+
+idea 构建项目
+
+~~~
+<dependency>
+<groupId>org.apache.hadoop</groupId>
+<artifactId>hadoop-common</artifactId>
+<version>2.6.5</version>
+</dependency>
+<dependency>
+<groupId>org.apache.hadoop</groupId>
+<artifactId>hadoop-hdfs</artifactId>
+<version>2.6.5</version>
+</dependency>
 ~~~
 
