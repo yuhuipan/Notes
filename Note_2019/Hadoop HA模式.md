@@ -307,3 +307,10 @@ idea 构建项目
 </dependency>
 ~~~
 
+block块放置的位置
+
+~~~
+/var/bigdata/hadoop/ha/dfs/data/current/BP-732148681-192.168.88.128-1569142952322/current/finalized/subdir0/subdir0
+~~~
+
+shift + g 移动到文件末尾
