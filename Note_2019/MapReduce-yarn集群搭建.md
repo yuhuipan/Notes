@@ -95,3 +95,23 @@ pom : hadoop-common  hadoop-hdfs
 Hadoop jar hadoop_hdfs-1.0-SNAPSHOT 主类全限定名
 ~~~
 
+MR 提交方式
+
+~~~
+1.开发 -> jar -> 上传到集群中的某个节点 -> hadoop jar xxxx.jar  xxx in out
+2.嵌入【linux,windows】（非Hadoop jar）的集群方式 on yarn
+	集群：M R
+	client -> RM -> appMaster
+	mapreduce.framework.name -> yarn  // 集群方式运行
+	// windows上运行
+	conf.set("mapreduce.app-submission.cross-platform","true")
+	// 推送jar包到hdfs
+	job.setJar(".../xxx.jar")
+3.local,单机 自测
+mapreduce.framework.name -> local //conf.set("mapreduce.framework.name","local")
+conf.set("mapreduce.app-submission.cross-platform","true")
+	1.在windows系统中部署Hadoop: C:/usr/hadoop-2.6.5
+	2.将资料中的Hadoop-install/soft/bin文件覆盖到 Hadoop部署的bin目录，将hadoop.dll复制到c:/windows/system32
+	3.设置环境变量 HADOOP_HOME
+~~~
+
