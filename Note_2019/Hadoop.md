@@ -67,10 +67,10 @@ vi /etc/sysconfig/network-scripts/ifcfg-ens33
 
 ```
 BOOTPROTO="static"
-IPADDR="192.168.88.128"
-NETMASK="255.255.255.0"
-GATEWAY="192.168.88.2"
-DNS1="114.114.114.114"
+IPADDR="192.168.88.128" #ip
+NETMASK="255.255.255.0" #子网掩码
+GATEWAY="192.168.88.2" #网关
+DNS1="114.114.114.114" #DNS
 ```
 
 vm sift + pgUp / pgDn 查看之前的日志
@@ -145,7 +145,7 @@ source /etc/profile  或者  . /etc/profile  使修改的配置生效
 ~~~
 ssh localhost  1.登录自己需要密码，2.被动生成了 /root/.ssh
 ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa    (-t类型，-P密码 -f保存到)
-cat ~/.ssh/id_das.pub>> ~/.ssh/authorized_keys
+cat ~/.ssh/id_dsa.pub>> ~/.ssh/authorized_keys
 ~~~
 
 ~~~
@@ -156,7 +156,7 @@ ssh-copy-id -i id_dsa node2
 
 结论：B包含了A的公钥，B登录A就可以免密了
 
-# hadoop
+# hadoop，单机
 
 1.规划路径 -local
 

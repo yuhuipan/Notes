@@ -143,11 +143,11 @@ HA 依赖 ZK 搭建ZK集群
 node2:
 cd ~/.ssh
 ssh-keygen -t dsa -P '' -f ./id_dsa
-cat id_dsa.pub >> authoried keys
+cat id_dsa.pub >> authorized_keys
 scp ./id_dsa.pub node1:`pwd`/node2.pub
 node1:
 cd ~/.ssh
-cat node2.pub >> authoried keys
+cat node2.pub >> authorized_keys
 
 ~~~
 
@@ -255,7 +255,7 @@ node1~node4:
 	node1,node2:
         cd ~/.ssh
         ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa (-t类型，-P密码 -f保存到)
-	node2:
+	node1:
         ssh-copy-id -i id_rsa node1 
         ssh-copy-id -i id_rsa node2
         ssh-copy-id -i id_rsa node3
