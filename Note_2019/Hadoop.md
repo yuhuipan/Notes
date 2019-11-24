@@ -149,7 +149,7 @@ cat ~/.ssh/id_das.pub>> ~/.ssh/authorized_keys
 ~~~
 
 ~~~
-ssh-copy-id -i id_dsa node2
+ssh-copy-id -i id_dsa node2，将公钥拷贝到node2节点
 ~~~
 
 
