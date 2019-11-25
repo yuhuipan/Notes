@@ -151,6 +151,8 @@ cat node2.pub >> authorized_keys
 
 ~~~
 
+## zookeeper
+
 3)zookeeper 集群搭建 java语言开发 jdk ；部署在2,3,4
 
 ~~~
@@ -167,7 +169,7 @@ vi zoo.cfg
 	server.2=node3:2888:3888
 	server.3=node4:2888:3888
 	
-mkdir /var/bigdata/hadoop/zk
+mkdir -p /var/bigdata/hadoop/zk
 echo 1 > /var/bigdata/hadoop/zk/myid
 
 vi /etc/profile
@@ -176,11 +178,11 @@ vi /etc/profile
 
 分发到其他机器上
 cd /opt/bigdata
-scp -r zookeeper-3.4.6/ node3:`pwd`
-scp -r zookeeper-3.4.6/ node4:`pwd`
+scp -r ./zookeeper-3.4.6/ node3:`pwd`
+scp -r ./zookeeper-3.4.6/ node4:`pwd`
 
 node3:
-mkdir /var/bigdata/hadoop/zk
+mkdir -p /var/bigdata/hadoop/zk
 echo 2 > /var/bigdata/hadoop/zk/myid
 vi /etc/profile
 	export ZOOKEEPER_HOME=/opt/bigdata/zookeeper-3.4.6
@@ -201,7 +203,7 @@ zkServer.sh status
 
 ~~~
 
-4)配置hadoop的core-site.xml和hdfs-site.xml
+4)配置hadoop的core-site.xml和hdfs-site.xml (full-->ha)
 
 5)分发配置
 
