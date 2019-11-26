@@ -125,8 +125,8 @@ HA 依赖 ZK 搭建ZK集群
 初始化启动
 
 ~~~
-1)先启动JN  hadoop-daemon.sh start journalnode
-2)选择一个NN做格式化：hdfs namenode -format
+1)先启动JN  hadoop-daemon.sh start journalnode (node01, node02, node03)
+2)选择一个NN做格式化：hdfs namenode -format (node01 or node02)
 3)启动这个格式化的NN，以备另外一台同步 Hadoop-daemon.sh start namenode
 4)在另外一台机器中：hdfs namenode -bootstrapStandby
 5)格式化zk:  hdfs zkfc -formatZk

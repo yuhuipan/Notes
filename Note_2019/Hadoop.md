@@ -254,7 +254,7 @@ http://node1:50070   http://node1:50090
 ```
 hdfs dfs -mkdir /bigdata
 hdfs dfs -mkdir -p /user/root
-
+hdfs dfs -D dfs.blocksize=1048576 -put data.txt
 ```
 
 验证知识点
