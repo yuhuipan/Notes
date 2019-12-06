@@ -2,7 +2,7 @@
 
 ## 规划
 
-![1569068467729](C:\Users\yuhuipan\AppData\Roaming\Typora\typora-user-images\1569068467729.png)
+![](..\pics\ha_ha1569068467729.png)
 
 
 
