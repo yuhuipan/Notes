@@ -63,7 +63,7 @@ etc/hadoop/yarn-site.xml:
 ~~~
 1.修改配置文件并分发
 2.启动  
-	start-yarn.sh  启动nodemanager
+	start-yarn.sh  启动nodemanager   (node01执行，免密)
 	yarn-daemon.sh start resourcemanager(node3,node4上手工启动)
 node3:8088    about  ,  nodes
 node4:8088
