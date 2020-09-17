@@ -18,3 +18,11 @@ $$ 优先级高于 |
 
 ~~~
 
+### jobs -l      fg  %number
+
+~~~linux
+jobs -l 查看所有后台任务
+fg %number 将后台任务切换到前台
+ctrl + z 将程序切换到后台
+~~~
+
